@@ -33,7 +33,7 @@ async def create(ctx, code, stime, duration):
         await ctx.send(embed=embed)
 
         user = await client.fetch_user(ctx.message.author.id)
-        await DMChannel.send(user, "Hello there!, you have hosted a forest session at" + (stime) + "and code is " + (code))
+        await DMChannel.send(user, f"Hello there, You have hosted a forest session at **{stime}** and code is **{code}** of **{duration}**mins")
 
     except:
         await ctx.send("Sorry, but give the full parameters required or type >help for the more commands")
@@ -62,7 +62,7 @@ async def on_member_join(member):
 async def on_message(message):
     with open('users.json','r') as f:
         users = json.load(f)
-
+    
     await update_data(users, message.author)
     await add_experience(users, message.author, 5)
     await level_up(users, message.author, message.channel)
@@ -73,22 +73,22 @@ async def on_message(message):
     await client.process_commands(message)
 
 async def update_data(users,user):
-    if not str(user.id) in users:
-        users[str(user.id)] = {}
-        users[str(user.id)]['experience'] = 0
-        users[str(user.id)]['level'] = 1
+  if not str(user.id) in users:
+      users[str(user.id)] = {}
+      users[str(user.id)]['experience'] = 0
+      users[str(user.id)]['level'] = 1
     
 async def add_experience(users, user, exp):
-    users[str(user.id)]['experience'] += exp
+  users[str(user.id)]['experience'] += exp
 
 async def level_up(users,user, channel):
-    experience = users[str(user.id)]['experience']
-    lvl_start = users[str(user.id)]['level']
-    lvl_end = int(experience ** (1/4))
+  experience = users[str(user.id)]['experience']
+  lvl_start = users[str(user.id)]['level']
+  lvl_end = int(experience ** (1/4))
 
-    if lvl_start < lvl_end:
-        await channel.send(f'{user.mention} has leveled up to level {lvl_end}')
-        users[str(user.id)]['level'] = lvl_end
+  if lvl_start < lvl_end:
+      await channel.send(f'GG!! {user.mention} u have leveled upto **{lvl_end}**!')
+      users[str(user.id)]['level'] = lvl_end
 
 @client.command()
 async def level(ctx, member: discord.Member = None):
@@ -97,13 +97,13 @@ async def level(ctx, member: discord.Member = None):
     with open('users.json', 'r') as f:
       users = json.load(f)
       lvl = users[str(id)]['level']
-      await ctx.send(f'You are at level {lvl}!')
+      await ctx.send(f'{member.mention}You are at level **{lvl}**!')
   else:
     id = member.id
     with open('users.json', 'r') as f:
       users = json.load(f)
       lvl = users[str(id)]['level']
-      await ctx.send(f'{member} is at level {lvl}!')
+      await ctx.send(f'{member.mention} is at level **{lvl}**!')
 
 def get_top_experience():
   with open('users.json', 'r') as f:
@@ -112,7 +112,6 @@ def get_top_experience():
   for i in users.keys():
     usersss[i] =  users[f'{i}']['experience']
   rank = sorted(usersss, key=usersss.get, reverse=True)
-  print(rank)
   return rank
 
 # @client.command()
@@ -131,14 +130,14 @@ async def rank(ctx, member: discord.Member = None):
       users = json.load(f)
       lvl = users[str(id)]['level']
       num_rank = rank.index(str(id))
-      await ctx.send(f'{ctx.author.mention}Your rank is {num_rank + 1}')
+      await ctx.send(f'{ctx.author.mention} your rank is #**{num_rank + 1}**')
   else:
     id = member.id
     with open('users.json', 'r') as f:
       users = json.load(f)
       lvl = users[str(id)]['level']
       num_rank = rank.index(str(id))
-      await ctx.send(f'{member.mention} is at level {lvl} and at rank {num_rank + 1}!')
+      await ctx.send(f'{member.mention} is at level **{lvl}** and at rank #**{num_rank + 1}**!')
 
 
 @client.command()
@@ -146,12 +145,11 @@ async def help(ctx):
   embed  = discord.Embed(title="Bot Help", colour=discord.Color.blue())
 
   embed.add_field(name="Forest", value = "Type >create {code} {starting time} {duration}. Dont include brackets", inline=False)
-  embed.add_field(name="Levels", value="Type >level to check your level", inline=False)
-  embed.add_field(name="Rank", value="Type >rank to check ur rank", inline=False)
+  embed.add_field(name="Hello", value="Type >hello, whenever u are feeling lonely", inline=False)
+  embed.add_field(name="Levels", value="Type >level to check your level, you can check ur frinds levels too", inline=False)
+  embed.add_field(name="Rank", value="Type >rank to check ur rank, you can check ur friends rank too", inline=False)
   embed.add_field(name="ping", value="Type >ping to check ur ping", inline=False)
-  embed.add_field(name="Hello", value="Type >hello, whenever u are feeling alone", inline=False)
 
   await ctx.send(embed=embed)
-
   
   client.run('TOKEN')
